@@ -60,9 +60,9 @@ class TicTacToe:
                         self.in_progress = False
             # print('MAIN BOARD', self.board.markers)
             if self.board.players_turn:
-                self.board.player_move(players_mark(self.board.players_turn))
+                self.board.player_move(get_marker(self.board.players_turn))
             else:
-                self.bot.make_move(players_mark(self.board.players_turn))
+                self.bot.make_move(get_marker(False))
             if self.board.winner:
                 self.in_progress = False
                 self.show_winner()
@@ -70,7 +70,7 @@ class TicTacToe:
             self.clock.tick(60)
 
     def start_game(self):
-        global CIRCLE, CROSS
+        global CROSS, CIRCLE
         CROSS = pygame.image.load('sprites/x.png')
         CIRCLE = pygame.image.load('sprites/o.png')
         CROSS = resize_sprite(CROSS, self.board_size)
@@ -117,7 +117,7 @@ class TicTacToe:
             pygame.display.update()
 
 
-def players_mark(players_turn):
+def get_marker(players_turn):
     return CIRCLE if players_turn else CROSS
 
 

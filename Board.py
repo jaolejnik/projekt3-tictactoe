@@ -48,10 +48,7 @@ class Board:
                         display_window.blit(player_mark, (x, y))
                         if mouse_click[0] == 1:
                             self.markers[i][j] = player_mark
-                            if self.full():
-                                self.winner = 'draw'
-                            if self.check_win(player_mark):
-                                self.winner = player_mark
+                            self.check_if_end(player_mark)
                             self.players_turn = not self.players_turn
                 y += self.gap_size + self.box_size
             x += self.gap_size + self.box_size
@@ -159,6 +156,8 @@ class Board:
                 counter += 1
         return counter == 0
 
-
-
-
+    def check_if_end(self, player_mark):
+        if self.full():
+            self.winner = 'draw'
+        if self.check_win(player_mark):
+            self.winner = player_mark
