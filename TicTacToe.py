@@ -41,9 +41,9 @@ class TicTacToe:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     win_screen = False
 
-            if self.board.winner == CIRCLE:
+            if self.board.winner == 'o':
                 display_window.blit(WIN_SCREEN, (0, 0))
-            elif self.board.winner == CROSS:
+            elif self.board.winner == 'x':
                 display_window.blit(LOSE_SCREEN, (0, 0))
             else:
                 display_window.blit(DRAW_SCREEN, (0, 0))
@@ -62,7 +62,7 @@ class TicTacToe:
             if self.board.players_turn:
                 self.board.player_move(get_marker(self.board.players_turn))
             else:
-                self.bot.make_move(get_marker(False))
+                self.bot.make_move(get_marker(self.board.players_turn))
             if self.board.winner:
                 self.in_progress = False
                 self.show_winner()
@@ -73,9 +73,9 @@ class TicTacToe:
         global CROSS, CIRCLE
         CROSS = pygame.image.load('sprites/x.png')
         CIRCLE = pygame.image.load('sprites/o.png')
-        CROSS = resize_sprite(CROSS, self.board_size)
-        CIRCLE = resize_sprite(CIRCLE, self.board_size)
         self.board = Board(self.board_size, self.win_condition)
+        self.board.CROSS = resize_sprite(CROSS, self.board_size)
+        self.board.CIRCLE = resize_sprite(CIRCLE, self.board_size)
         self.bot = Ai(self.board)
         pygame.time.delay(500)
         self.in_progress = True
@@ -116,9 +116,6 @@ class TicTacToe:
 
             pygame.display.update()
 
-
-def get_marker(players_turn):
-    return CIRCLE if players_turn else CROSS
 
 
 if __name__ == "__main__":

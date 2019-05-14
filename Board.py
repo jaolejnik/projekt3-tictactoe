@@ -10,6 +10,8 @@ class Board:
         self.markers = [[None for x in range(self.size)] for y in range(self.size)]
         self.players_turn = True
         self.winner = None
+        self.CIRCLE = None
+        self.CROSS = None
         '''
         Sizes of gaps and boxes are calculated from this equation:
             { WIDTH( or HEIGHT) = BOARD_SIZE * (FIELD_SIZE + GAP_SIZE)
@@ -34,9 +36,12 @@ class Board:
                     continue
                 center_x = self.gap_size + x * (self.gap_size + self.box_size)
                 center_y = self.gap_size + y * (self.gap_size + self.box_size)
-                display_window.blit(marker, (center_x, center_y))
+                if marker == 'o':
+                    display_window.blit(self.CIRCLE, (center_x, center_y))
+                elif marker == 'x':
+                    display_window.blit(self.CROSS, (center_x, center_y))
 
-    def marker_clicked(self, player_mark):
+    def marker_clicked(self, player_marker):
         mouse_pos = pygame.mouse.get_pos()
         mouse_click = pygame.mouse.get_pressed()
         x = self.gap_size
@@ -45,10 +50,13 @@ class Board:
             for j in range(self.size):
                 if not self.markers[i][j]:
                     if x < mouse_pos[0] < x + self.box_size and y < mouse_pos[1] < y + self.box_size:
-                        display_window.blit(player_mark, (x, y))
+                        if player_marker == 'o':
+                            display_window.blit(self.CIRCLE, (x, y))
+                        elif player_marker == 'x':
+                            display_window.blit(self.CROSS, (x, y))
                         if mouse_click[0] == 1:
-                            self.markers[i][j] = player_mark
-                            self.check_if_end(player_mark)
+                            self.markers[i][j] = player_marker
+                            self.check_if_end(player_marker)
                             self.players_turn = not self.players_turn
                 y += self.gap_size + self.box_size
             x += self.gap_size + self.box_size
@@ -57,9 +65,9 @@ class Board:
         self.draw_grid()
         self.draw_markers()
 
-    def player_move(self, player_mark):
+    def player_move(self, player_marker):
         self.draw()
-        self.marker_clicked(player_mark)
+        self.marker_clicked(player_marker)
 
     def check_cols(self, seq):
         for col in self.markers:
@@ -145,8 +153,8 @@ class Board:
                         return True
             col += 1
 
-    def check_win(self, player_mark):
-        win = [player_mark] * self.win_condition
+    def check_win(self, player_marker):
+        win = [player_marker] * self.win_condition
         return self.check_rows(win) or self.check_cols(win) or self.check_diag(win)
 
     def full(self):
@@ -156,8 +164,21 @@ class Board:
                 counter += 1
         return counter == 0
 
-    def check_if_end(self, player_mark):
+    def empty(self):
+        return self.markers == [[None for x in range(self.size)] for y in range(self.size)]
+
+    def check_if_end(self, player_marker):
         if self.full():
             self.winner = 'draw'
-        if self.check_win(player_mark):
-            self.winner = player_mark
+        if self.check_win(player_marker):
+            self.winner = player_marker
+
+    def print_board(self):
+        for y in range(self.size):
+            print('| ', end='')
+            for x in range(self.size):
+                if self.markers[x][y] is None:
+                    print('  | ', end='')
+                else:
+                    print(self.markers[x][y], '| ', end='')
+            print()
