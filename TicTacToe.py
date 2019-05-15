@@ -3,35 +3,53 @@ from AI import *
 
 
 class TicTacToe:
-    def __init__(self, size=3, ai_turn=False):
+    '''
+    Class to represent a game of Tic-Tac-Toe.
+    '''
+    def __init__(self, size=3):
         pygame.init()
+        self.clock = pygame.time.Clock()
         self.board_size = size
         self.win_condition = size
-        self.clock = pygame.time.Clock()
         self.board = None
         self.bot = None
         self.in_progress = False
         self.winner = None
 
     def reduce_size(self):
+        '''
+        Reduces size of the board that will be created.
+        '''
         if self.board_size > 3:
             self.board_size -= 1
             self.win_condition = self.board_size
 
     def increase_size(self):
-        if self.board_size < 50:
+        '''
+        Increases size of the board that will be created.
+        '''
+        if self.board_size < 10:
             self.board_size += 1
             self.win_condition = self.board_size
 
     def reduce_condition(self):
+        '''
+        Reduces size of the markers sequence that will be required to win.
+        '''
         if self.win_condition > 3:
             self.win_condition -= 1
 
     def increase_condition(self):
+        '''
+        Increases size of the markers sequence that will be required to win.
+        '''
         if self.win_condition < self.board_size:
             self.win_condition += 1
 
     def show_winner(self):
+        '''
+        Displays message that informs a player if he was victorious.
+        '''
         win_screen = True
         while win_screen:
             for event in pygame.event.get():
@@ -50,6 +68,9 @@ class TicTacToe:
             pygame.display.update()
 
     def game_loop(self):
+        '''
+        Handles events during the game and runs until there is a winner or a draw.
+        '''
         while self.in_progress:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -70,6 +91,9 @@ class TicTacToe:
             self.clock.tick(60)
 
     def start_game(self):
+        '''
+        Initializes the board, markers and the bot and the starts the game.
+        '''
         global CROSS, CIRCLE
         CROSS = pygame.image.load('sprites/x.png')
         CIRCLE = pygame.image.load('sprites/o.png')
@@ -82,10 +106,16 @@ class TicTacToe:
         self.game_loop()
 
     def close(self):
+        '''
+        Safe close of the game.
+        '''
         pygame.quit()
         quit()
 
     def run(self):
+        '''
+        Start's the whole game. Displays a start screen, where player can change size of the board and win condition.
+        '''
         start_screen = True
         while start_screen:
             for event in pygame.event.get():

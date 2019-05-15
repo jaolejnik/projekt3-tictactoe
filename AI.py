@@ -1,16 +1,22 @@
 from setupGame import *
-import copy
 
-INF = 100
+INF = 1000
 
 
 class Ai:
+    '''
+    Class that represents a bot, that plays the game of Tic-Tac-Toe.
+    It evaluates the board and performs the best move.
+    '''
     def __init__(self, board):
         self.board = board
 
     def make_move(self, player_marker):
-        print('ROBIE RUCH')
-        print('-----------')
+        '''
+        Calls best_move() to find the best possible move and then performs it.
+        '''
+        display_message_stroke(None, 100, 'THINKING...', BLACK, (WIDTH/2, HEIGHT/2), WHITE, 4)
+        pygame.display.update()
         move = self.best_move()
         self.board.markers[move[0]][move[1]] = player_marker
         self.board.draw()
@@ -18,6 +24,9 @@ class Ai:
         self.board.players_turn = not self.board.players_turn
 
     def check_possible_moves(self):
+        '''
+        Return all available moves at the current board.
+        '''
         available_moves = []
         for x in range(self.board.size):
             for y in range(self.board.size):
@@ -26,15 +35,18 @@ class Ai:
         return available_moves
 
     def best_move(self):
+        '''
+        Finds the best move for the current state of the board
+        '''
         best_value = -INF
         best_move = None
         available_moves = self.check_possible_moves()
+        depth = 2 * self.board.size - self.board.win_condition
 
         for move in available_moves:
             self.board.markers[move[0]][move[1]] = get_marker(self.board.players_turn)
-            move_value = self.minimax(3, False, -INF, INF)
+            move_value = self.minimax(depth, False, -INF, INF)
             self.board.markers[move[0]][move[1]] = None
-            print('MOVE VALUE', move_value)
             if move_value > best_value:
                 best_value = move_value
                 best_move = move
@@ -42,6 +54,10 @@ class Ai:
         return best_move
 
     def minimax(self, depth, max_player, alpha, beta):
+        '''
+        Performs minimax algorithm, that evaluates and finds the best moves for maximazing
+        and minimazing players.
+        '''
         print('TERAZ GRACZ', get_marker(max_player))
         self.board.print_board()
 
@@ -51,8 +67,8 @@ class Ai:
         if self.board.full() or depth == 0:
             return 0
 
+
         available_moves = self.check_possible_moves()
-        print('MOZE SIE RUSZYC:', available_moves)
 
         if max_player:
             max_eval = -INF
@@ -67,7 +83,6 @@ class Ai:
             return max_eval
 
         else:
-            #print('TERAZ GRACZ MIN', get_marker(not max_player))
             min_eval = INF
             for move in available_moves:
                 self.board.markers[move[0]][move[1]] = get_marker(True)
@@ -77,6 +92,5 @@ class Ai:
                 beta = min(beta, eval)
                 if beta <= alpha:
                     break
-                #print('MIN EVAL', min_eval)
             return min_eval
 
