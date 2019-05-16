@@ -15,9 +15,14 @@ class Ai:
         '''
         Calls best_move() to find the best possible move and then performs it.
         '''
-        display_message_stroke(None, 100, 'THINKING...', BLACK, (WIDTH/2, HEIGHT/2), WHITE, 4)
-        pygame.display.update()
-        move = self.best_move()
+        print('ROBIE RUCH')
+        print('----------------------')
+        if self.predefined_moves():
+            move = self.predefined_moves()
+        else:
+            display_message_stroke(None, 100, 'THINKING...', BLACK, (WIDTH/2, HEIGHT/2), WHITE, 4)
+            pygame.display.update()
+            move = self.best_move()
         self.board.markers[move[0]][move[1]] = player_marker
         self.board.draw()
         self.board.check_if_end(player_marker)
@@ -58,15 +63,15 @@ class Ai:
         Performs minimax algorithm, that evaluates and finds the best moves for maximazing
         and minimazing players.
         '''
-        print('TERAZ GRACZ', get_marker(max_player))
-        self.board.print_board()
+        # print('TERAZ GRACZ', get_marker(max_player))
+        # self.board.print_board()
 
         if self.board.check_win(get_marker(max_player)):
             return -10 if max_player else 10
-
-        if self.board.full() or depth == 0:
+        if self.board.full():
+            return 1
+        if depth == 0:
             return 0
-
 
         available_moves = self.check_possible_moves()
 
@@ -94,3 +99,13 @@ class Ai:
                     break
             return min_eval
 
+    def predefined_moves(self):
+        '''
+        Some predefines moves to make bot think faster during first turns.
+        '''
+        if self.board.size % 2 == 0:
+            center = int(self.board.size / 3)
+        else:
+            center = int(self.board.size / 2)
+        if self.board.markers[center][center] is None:
+            return (center, center)

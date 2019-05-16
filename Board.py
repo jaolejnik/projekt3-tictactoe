@@ -127,7 +127,6 @@ class Board:
             if len(diagonal) >= self.win_condition:
                 for i in range(len(diagonal) - len(seq) + 1):
                     if seq == diagonal[i:i + len(seq)]:
-                        print(1)
                         return True
             row += 1
         #   second half
@@ -205,6 +204,7 @@ class Board:
     def check_if_end(self, player_marker):
         '''
         Checks whether the game is over(there is a winner or the board is full).
+        If it is, marks player on the move as the winner
         '''
         if self.full():
             self.winner = 'draw'

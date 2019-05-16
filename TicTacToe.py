@@ -12,6 +12,7 @@ class TicTacToe:
         self.board_size = size
         self.win_condition = size
         self.board = None
+        self.solo_mode = True
         self.bot = None
         self.in_progress = False
         self.winner = None
@@ -19,6 +20,7 @@ class TicTacToe:
     def reduce_size(self):
         '''
         Reduces size of the board that will be created.
+        Minimal size is 3.
         '''
         if self.board_size > 3:
             self.board_size -= 1
@@ -27,6 +29,7 @@ class TicTacToe:
     def increase_size(self):
         '''
         Increases size of the board that will be created.
+        Maximum size is 10
         '''
         if self.board_size < 10:
             self.board_size += 1
@@ -35,6 +38,7 @@ class TicTacToe:
     def reduce_condition(self):
         '''
         Reduces size of the markers sequence that will be required to win.
+        Minimal size is 3.
         '''
         if self.win_condition > 3:
             self.win_condition -= 1
@@ -48,7 +52,7 @@ class TicTacToe:
 
     def show_winner(self):
         '''
-        Displays message that informs a player if he was victorious.
+        Displays message that informs a player if he is victorious.
         '''
         win_screen = True
         while win_screen:
@@ -79,11 +83,13 @@ class TicTacToe:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         self.in_progress = False
-            # print('MAIN BOARD', self.board.markers)
-            if self.board.players_turn:
-                self.board.player_move(get_marker(self.board.players_turn))
+            if self.solo_mode:
+                if self.board.players_turn:
+                    self.board.player_move(get_marker(self.board.players_turn))
+                else:
+                    self.bot.make_move(get_marker(self.board.players_turn))
             else:
-                self.bot.make_move(get_marker(self.board.players_turn))
+                self.board.player_move(get_marker(self.board.players_turn))
             if self.board.winner:
                 self.in_progress = False
                 self.show_winner()
@@ -112,9 +118,25 @@ class TicTacToe:
         pygame.quit()
         quit()
 
+    def return_mode(self):
+        '''
+        Returns current game mode as a string.
+        '''
+        if self.solo_mode:
+            return '1 PLAYER'
+        else:
+            return '2 PLAYERS'
+
+    def change_mode(self):
+        '''
+        Changes current game mode.
+        '''
+        self.solo_mode = not self.solo_mode
+
+
     def run(self):
         '''
-        Start's the whole game. Displays a start screen, where player can change size of the board and win condition.
+        Starts the whole game. Displays a start screen, where player can change size of the board and win condition.
         '''
         start_screen = True
         while start_screen:
@@ -129,17 +151,20 @@ class TicTacToe:
                         pygame.quit()
                         quit()
             display_window.fill(DARK_GRAY)
-            display_message_stroke(None, 125, 'Tic-Tac-Toe', WHITE, (WIDTH / 2, HEIGHT / 5), BLACK, 5)
+            display_message_stroke(None, 125, 'TIC-TAC-TOE', WHITE, (WIDTH / 2, HEIGHT / 8), BLACK, 5)
 
-            display_message_stroke(None, 60, 'Size of the board', WHITE, (WIDTH / 2, HEIGHT / 2.75), BLACK, 3)
-            button(str(self.board_size), WIDTH / 2 - 50, HEIGHT / 2.5, 100, 100, WHITE, WHITE)
-            button('-', WIDTH / 2 - 110, HEIGHT / 2.5 + 25, 50, 50, WHITE, LIGHT_GRAY, self.reduce_size)
-            button('+', WIDTH / 2 + 60, HEIGHT / 2.5 + 25, 50, 50, WHITE, LIGHT_GRAY, self.increase_size)
+            display_message_stroke(None, 60, 'Game mode', WHITE, (WIDTH / 2, HEIGHT / 4), BLACK, 3)
+            button(self.return_mode(), WIDTH/2 - 75, HEIGHT/3.5, 150, 70, WHITE, LIGHT_GRAY, self.change_mode)
+
+            display_message_stroke(None, 60, 'Size of the board', WHITE, (WIDTH / 2, HEIGHT / 2.25), BLACK, 3)
+            button(str(self.board_size), WIDTH / 2 - 35, HEIGHT / 2.1, 70, 70, WHITE, WHITE)
+            button('-', WIDTH / 2 - 70, HEIGHT / 2.1 + 20, 30, 30, WHITE, LIGHT_GRAY, self.reduce_size)
+            button('+', WIDTH / 2 + 40, HEIGHT / 2.1 + 20, 30, 30, WHITE, LIGHT_GRAY, self.increase_size)
 
             display_message_stroke(None, 50, 'Amount of signs in one line to win', WHITE, (WIDTH / 2, HEIGHT / 1.6), BLACK, 3)
-            button(str(self.win_condition), WIDTH / 2 - 50, HEIGHT / 1.5, 100, 100, WHITE, WHITE)
-            button('-', WIDTH / 2 - 110, HEIGHT / 1.5 + 25, 50, 50, WHITE, LIGHT_GRAY, self.reduce_condition)
-            button('+', WIDTH / 2 + 60, HEIGHT / 1.5 + 25, 50, 50, WHITE, LIGHT_GRAY, self.increase_condition)
+            button(str(self.win_condition), WIDTH / 2 - 35, HEIGHT / 1.5, 70, 70, WHITE, WHITE)
+            button('-', WIDTH / 2 - 70, HEIGHT / 1.5 + 20, 30, 30, WHITE, LIGHT_GRAY, self.reduce_condition)
+            button('+', WIDTH / 2 + 40, HEIGHT / 1.5 + 20, 30, 30, WHITE, LIGHT_GRAY, self.increase_condition)
 
             button('START', WIDTH / 4 - 75, HEIGHT / 1.2, 150, 100, WHITE, LIGHT_GRAY, self.start_game)
             button('QUIT', 3 * WIDTH / 4 - 75, HEIGHT / 1.2, 150, 100, WHITE, LIGHT_GRAY, self.close)

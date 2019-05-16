@@ -25,13 +25,16 @@ CIRCLE = pygame.image.load('sprites/o.png')
 WIN_SCREEN = pygame.image.load('sprites/win.png')
 LOSE_SCREEN = pygame.image.load('sprites/lose.png')
 DRAW_SCREEN = pygame.image.load('sprites/draw.png')
+ICON = pygame.image.load('sprites/icon.png')
 # --------------------------------
 
 #
 
 # Set resolution and caption
+pygame.display.set_icon(ICON)
 display_window = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Tic-Tac-Toe')
+
 
 
 def get_marker(players_turn):
@@ -61,7 +64,7 @@ def text_objects(text, font, color):
 
 def display_message(font_type, size, message, color, pos):
     '''
-    Utility function for displaying a text in the display window.
+    Utility procedure for displaying a text in the display window.
     '''
     text = pygame.font.Font(font_type, size)
     text_surf, text_rect = text_objects(message, text, color)
@@ -86,7 +89,7 @@ def display_message_stroke(font_type, size, message, color, pos, s_color, stroke
 
 def button(message, pos_x, pos_y, width, height, inactive_color, active_color, action=None):
     '''
-    Utility function for easier creation of buttons.
+    Utility procedure for easier creation of buttons.
     '''
     mouse_pos = pygame.mouse.get_pos()
     mouse_clicked = pygame.mouse.get_pressed()
